@@ -278,6 +278,13 @@ canvas {
     transition: transform 0.3s ease;
 }
 
+.user-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    color: #00d4ff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
 .user h4 {
     color: #00d4ff;
     font-weight: 600;

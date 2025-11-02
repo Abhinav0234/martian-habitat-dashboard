@@ -488,12 +488,27 @@ function getPreventionTips(alerts) {
   return alerts.map(alert => `<li>${tips[alert] || 'Follow general health guidelines.'}</li>`).join('');
 }
 
+// Get icon based on role
+function getRoleIcon(role) {
+  const icons = {
+    'Commander': '⭐',
+    'Engineer': '⚙️',
+    'Scientist': '🔬',
+    'Medic': '⚕️',
+    'Technician': '🔧',
+    'Pilot': '✈️'
+  };
+  return icons[role] || '👤';
+}
+
 // Display users
 function displayUsers() {
   const userList = users.map(user => {
     const preventionTips = getPreventionTips(user.alerts);
+    const icon = getRoleIcon(user.role);
     return `
     <div class="user">
+      <div class="user-icon">${icon}</div>
       <h4>${user.name}</h4>
       <p>Role: ${user.role}</p>
       <p>Bio: ${user.bio}</p>
