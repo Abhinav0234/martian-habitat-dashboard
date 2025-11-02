@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="styles.css?CACHEBUSTER">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
 </head>
 <body>
     <div class="dashboard">
@@ -30,20 +30,24 @@
         </header>
         <aside class="sidebar">
             <h3>Current Values</h3>
-             <div id="current-values">
-                 <p>Oxygen: <span id="oxygen-val">20.5%</span></p>
-                 <p>Interior Temp: <span id="temp-val">22°C</span></p>
-                 <p>Food Inventory: <span id="food-val">85%</span></p>
-                 <p>Power Usage: <span id="power-val">60%</span></p>
-                 <p>Sleep Cycles: <span id="sleep-val">7.5h</span></p>
-                 <p>Wellness: <span id="wellness-val">Good</span></p>
-             </div>
+              <div id="current-values">
+                  <p>Oxygen: <span id="oxygen-val" title="Oxygen below 19% may trigger emergency tanks">20.5%</span></p>
+                  <p>Interior Temp: <span id="temp-val" title="Temperature above 25°C or below 0°C may damage equipment">22°C</span></p>
+                  <p>Food Inventory: <span id="food-val" title="Food inventory below 20% triggers rationing protocols">85%</span></p>
+                  <p>Power Usage: <span id="power-val" title="Power usage above 90% may cause system overload">60%</span></p>
+                  <p>Sleep Cycles: <span id="sleep-val" title="Sleep below 6 hours may affect crew performance">7.5h</span></p>
+                  <p>Wellness: <span id="wellness-val" title="Mental wellness monitoring for crew health">Good</span></p>
+              </div>
         </aside>
         <main class="main-content">
-            <section id="alerts" class="alerts-section">
-                <h2>Active Alerts</h2>
-                <div id="alert-list"></div>
-            </section>
+             <section id="alerts" class="alerts-section">
+                 <h2>Active Alerts</h2>
+                 <div id="alert-list"></div>
+                 <div id="alert-history" style="display: none;">
+                     <h3>Alert History</h3>
+                     <div id="alert-history-list"></div>
+                 </div>
+             </section>
              <section id="life-support" class="dashboard-section">
                  <h2>Life Support Systems</h2>
                  <div class="widgets">
@@ -155,6 +159,43 @@
             </section>
         </main>
     </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-name"></h2>
+                <button id="modal-close" class="modal-close-btn" onclick="closeProfileModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-section">
+                    <h3>Role & Bio</h3>
+                    <p><strong>Role:</strong> <span id="modal-role"></span></p>
+                    <p><strong>Bio:</strong> <span id="modal-bio"></span></p>
+                </div>
+                <div class="profile-section">
+                    <h3>Health Stats</h3>
+                    <p><strong>Oxygen Level:</strong> <span id="modal-oxygen"></span></p>
+                    <p><strong>Temperature:</strong> <span id="modal-temp"></span></p>
+                    <p><strong>Sleep Hours:</strong> <span id="modal-sleep"></span></p>
+                    <p><strong>Wellness:</strong> <span id="modal-wellness"></span></p>
+                </div>
+                <div class="profile-section">
+                    <h3>Active Alerts</h3>
+                    <ul id="modal-alerts"></ul>
+                    <button id="add-alert-btn" onclick="addAlertToUser()">Add Alert</button>
+                </div>
+                <div class="profile-section">
+                    <h3>Personal Notes</h3>
+                    <textarea id="modal-notes" placeholder="Add personal notes about this crew member..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-save" onclick="saveProfileChanges()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js?CACHEBUSTER"></script>
 </body>
 </html>

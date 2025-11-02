@@ -2,12 +2,12 @@
 
 // User data with privileges
 let users = [
-  { id: 1, name: 'Dheeraj Chennaboina', role: 'Commander', bio: 'Lead astronaut.', alerts: ['Hydration reminder'], privileges: ['read', 'write', 'admin', 'medical', 'research', 'navigation'] },
-  { id: 2, name: 'Tarushv Kosgi', role: 'Engineer', bio: 'Systems engineer.', alerts: ['Sleep cycle alert'], privileges: ['read', 'write'] },
-  { id: 3, name: 'Abhinav Boora', role: 'Scientist', bio: 'Research scientist.', alerts: ['Mental wellness check'], privileges: ['read', 'research'] },
-  { id: 4, name: 'Lalith Dasa', role: 'Medic', bio: 'Medical officer.', alerts: ['Exercise reminder'], privileges: ['read', 'medical'] },
-  { id: 5, name: 'Crew Member 5', role: 'Technician', bio: 'Maintenance tech.', alerts: [], privileges: ['read'] },
-  { id: 6, name: 'Crew Member 6', role: 'Pilot', bio: 'Mission pilot.', alerts: [], privileges: ['read', 'navigation'] }
+  { id: 1, name: 'Dheeraj Chennaboina', role: 'Commander', bio: 'Lead astronaut.', alerts: ['Hydration reminder'], personalNotes: '', privileges: ['read', 'write', 'admin', 'medical', 'research', 'navigation'] },
+  { id: 2, name: 'Tarushv Kosgi', role: 'Engineer', bio: 'Systems engineer.', alerts: ['Sleep cycle alert'], personalNotes: '', privileges: ['read', 'write'] },
+  { id: 3, name: 'Abhinav Boora', role: 'Scientist', bio: 'Research scientist.', alerts: ['Mental wellness check'], personalNotes: '', privileges: ['read', 'research'] },
+  { id: 4, name: 'Lalith Dasa', role: 'Medic', bio: 'Medical officer.', alerts: ['Exercise reminder'], personalNotes: '', privileges: ['read', 'medical'] },
+  { id: 5, name: 'Crew Member 5', role: 'Technician', bio: 'Maintenance tech.', alerts: [], personalNotes: '', privileges: ['read'] },
+  { id: 6, name: 'Crew Member 6', role: 'Pilot', bio: 'Mission pilot.', alerts: [], personalNotes: '', privileges: ['read', 'navigation'] }
 ];
 
 let currentUser = null;
@@ -25,8 +25,13 @@ let data = {
 
 let startTime = Date.now();
 
+// Alert history
+let alertHistory = [];
+
 // Charts
 let charts = {};
+
+
 
 // Normal distribution random function for realistic noise
 function randomNormal(mean, std) {
@@ -54,10 +59,10 @@ function initCharts() {
         backgroundColor: 'rgba(0, 212, 255, 0.1)'
       }]
     },
-    options: {
-      responsive: true,
-      animation: { duration: 0 },
-      scales: {
+     options: {
+       responsive: true,
+       animation: { duration: 0 },
+       scales: {
         x: {
           type: 'time',
           time: { unit: 'second', displayFormats: { second: 'mm:ss' } },
@@ -69,14 +74,34 @@ function initCharts() {
           grid: { color: 'rgba(255,255,255,0.1)' },
           ticks: { color: '#e0e0e0' }
         }
-      },
-      plugins: {
-        legend: { labels: { color: '#e0e0e0' } }
-      }
-    }
-  });
+       },
+        plugins: {
+          legend: { labels: { color: '#e0e0e0' } },
+          tooltip: {
+           callbacks: {
+             label: function(context) {
+               const value = context.parsed.y;
+               const warning = value < 19 ? ' (WARNING: Low oxygen!)' : '';
+               return `Oxygen: ${value.toFixed(1)}%${warning}`;
+             }
+           },
+           backgroundColor: function(context) {
+             const value = context.tooltip.dataPoints[0].parsed.y;
+             return value < 19 ? 'rgba(255, 59, 48, 0.9)' : 'rgba(0, 212, 255, 0.9)';
+           },
+           titleColor: '#ffffff',
+           bodyColor: '#ffffff',
+           borderColor: function(context) {
+             const value = context.tooltip.dataPoints[0].parsed.y;
+             return value < 19 ? 'rgba(255, 59, 48, 1)' : 'rgba(0, 212, 255, 1)';
+           },
+           borderWidth: 1
+         }
+       }
+     }
+   });
 
-  const ctxInteriorTemp = document.getElementById('interior-temp-chart').getContext('2d');
+    const ctxInteriorTemp = document.getElementById('interior-temp-chart').getContext('2d');
   charts.interiorTemp = new Chart(ctxInteriorTemp, {
     type: 'line',
     data: {
@@ -91,10 +116,10 @@ function initCharts() {
         backgroundColor: 'rgba(255, 107, 107, 0.1)'
       }]
     },
-    options: {
-      responsive: true,
-      animation: { duration: 0 },
-      scales: {
+     options: {
+       responsive: true,
+       animation: { duration: 0 },
+       scales: {
         x: {
           type: 'time',
           time: { unit: 'second', displayFormats: { second: 'mm:ss' } },
@@ -106,14 +131,34 @@ function initCharts() {
           grid: { color: 'rgba(255,255,255,0.1)' },
           ticks: { color: '#e0e0e0' }
         }
-      },
-      plugins: {
-        legend: { labels: { color: '#e0e0e0' } }
-      }
-    }
-  });
+       },
+        plugins: {
+          legend: { labels: { color: '#e0e0e0' } },
+          tooltip: {
+           callbacks: {
+             label: function(context) {
+               const value = context.parsed.y;
+               const warning = value > 25 ? ' (WARNING: High temperature!)' : '';
+               return `Interior Temp: ${value.toFixed(1)}°C${warning}`;
+             }
+           },
+           backgroundColor: function(context) {
+             const value = context.tooltip.dataPoints[0].parsed.y;
+             return value > 25 ? 'rgba(255, 59, 48, 0.9)' : 'rgba(255, 107, 107, 0.9)';
+           },
+           titleColor: '#ffffff',
+           bodyColor: '#ffffff',
+           borderColor: function(context) {
+             const value = context.tooltip.dataPoints[0].parsed.y;
+             return value > 25 ? 'rgba(255, 59, 48, 1)' : 'rgba(255, 107, 107, 1)';
+           },
+           borderWidth: 1
+         }
+       }
+     }
+   });
 
-  const ctxExteriorTemp = document.getElementById('exterior-temp-chart').getContext('2d');
+    const ctxExteriorTemp = document.getElementById('exterior-temp-chart').getContext('2d');
   charts.exteriorTemp = new Chart(ctxExteriorTemp, {
     type: 'line',
     data: {
@@ -128,10 +173,10 @@ function initCharts() {
         backgroundColor: 'rgba(255, 69, 0, 0.1)'
       }]
     },
-    options: {
-      responsive: true,
-      animation: { duration: 0 },
-      scales: {
+     options: {
+       responsive: true,
+       animation: { duration: 0 },
+       scales: {
         x: {
           type: 'time',
           time: { unit: 'second', displayFormats: { second: 'mm:ss' } },
@@ -143,21 +188,41 @@ function initCharts() {
           grid: { color: 'rgba(255,255,255,0.1)' },
           ticks: { color: '#e0e0e0' }
         }
-      },
-      plugins: {
-        legend: { labels: { color: '#e0e0e0' } }
-      }
-    }
-  });
+       },
+        plugins: {
+          legend: { labels: { color: '#e0e0e0' } },
+          tooltip: {
+           callbacks: {
+             label: function(context) {
+               const value = context.parsed.y;
+               const warning = (value < -50 || value > 30) ? ' (WARNING: Extreme conditions!)' : '';
+               return `Exterior Temp: ${value.toFixed(1)}°C${warning}`;
+             }
+           },
+           backgroundColor: function(context) {
+             const value = context.tooltip.dataPoints[0].parsed.y;
+             return (value < -50 || value > 30) ? 'rgba(255, 59, 48, 0.9)' : 'rgba(255, 69, 0, 0.9)';
+           },
+           titleColor: '#ffffff',
+           bodyColor: '#ffffff',
+           borderColor: function(context) {
+             const value = context.tooltip.dataPoints[0].parsed.y;
+             return (value < -50 || value > 30) ? 'rgba(255, 59, 48, 1)' : 'rgba(255, 69, 0, 1)';
+           },
+           borderWidth: 1
+         }
+       }
+     }
+   });
 
-  const ctxFood = document.getElementById('food-chart').getContext('2d');
+   const ctxFood = document.getElementById('food-chart').getContext('2d');
   charts.food = new Chart(ctxFood, {
     type: 'bar',
     data: { labels: ['Current'], datasets: [{ label: 'Food Inventory %', data: [], backgroundColor: '#4ecdc4' }] },
-    options: {
-      responsive: true,
-      animation: { duration: 0 },
-      scales: {
+     options: {
+       responsive: true,
+       animation: { duration: 0 },
+       scales: {
         y: {
           beginAtZero: true,
           max: 100,
@@ -165,27 +230,70 @@ function initCharts() {
           ticks: { color: '#e0e0e0' }
         },
         x: { ticks: { color: '#e0e0e0' } }
-      },
-      plugins: {
-        legend: { labels: { color: '#e0e0e0' } }
-      }
-    }
-  });
+       },
+        plugins: {
+          legend: { labels: { color: '#e0e0e0' } },
+          tooltip: {
+           callbacks: {
+             label: function(context) {
+               const value = context.parsed.y;
+               const warning = value < 20 ? ' (WARNING: Low food!)' : '';
+               return `Food Inventory: ${value.toFixed(1)}%${warning}`;
+             }
+           },
+           backgroundColor: function(context) {
+             const value = context.tooltip.dataPoints[0].parsed.y;
+             return value < 20 ? 'rgba(255, 59, 48, 0.9)' : 'rgba(78, 205, 196, 0.9)';
+           },
+           titleColor: '#ffffff',
+           bodyColor: '#ffffff',
+           borderColor: function(context) {
+             const value = context.tooltip.dataPoints[0].parsed.y;
+             return value < 20 ? 'rgba(255, 59, 48, 1)' : 'rgba(78, 205, 196, 1)';
+           },
+           borderWidth: 1
+         }
+       }
+     }
+   });
 
-  const ctxPower = document.getElementById('power-chart').getContext('2d');
+   const ctxPower = document.getElementById('power-chart').getContext('2d');
   charts.power = new Chart(ctxPower, {
     type: 'doughnut',
     data: { labels: ['Used', 'Available'], datasets: [{ data: [], backgroundColor: ['#ffa726', '#66bb6a'] }] },
-    options: {
-      responsive: true,
-      animation: { duration: 0 },
-      plugins: {
-        legend: { labels: { color: '#e0e0e0' } }
-      }
-    }
-  });
+     options: {
+       responsive: true,
+       animation: { duration: 0 },
+        plugins: {
+          legend: { labels: { color: '#e0e0e0' } },
+          tooltip: {
+           callbacks: {
+             label: function(context) {
+               const label = context.label || '';
+               const value = context.parsed;
+               const warning = label === 'Used' && value > 90 ? ' (WARNING: High usage!)' : '';
+               return `${label}: ${value}%${warning}`;
+             }
+           },
+           backgroundColor: function(context) {
+             const label = context.tooltip.dataPoints[0].label;
+             const value = context.tooltip.dataPoints[0].parsed;
+             return (label === 'Used' && value > 90) ? 'rgba(255, 59, 48, 0.9)' : 'rgba(255, 167, 38, 0.9)';
+           },
+           titleColor: '#ffffff',
+           bodyColor: '#ffffff',
+           borderColor: function(context) {
+             const label = context.tooltip.dataPoints[0].label;
+             const value = context.tooltip.dataPoints[0].parsed;
+             return (label === 'Used' && value > 90) ? 'rgba(255, 59, 48, 1)' : 'rgba(255, 167, 38, 1)';
+           },
+           borderWidth: 1
+         }
+       }
+     }
+   });
 
-  const ctxSleep = document.getElementById('sleep-chart').getContext('2d');
+    const ctxSleep = document.getElementById('sleep-chart').getContext('2d');
   charts.sleep = new Chart(ctxSleep, {
     type: 'line',
     data: {
@@ -200,10 +308,10 @@ function initCharts() {
         backgroundColor: 'rgba(171, 71, 188, 0.1)'
       }]
     },
-    options: {
-      responsive: true,
-      animation: { duration: 0 },
-      scales: {
+     options: {
+       responsive: true,
+       animation: { duration: 0 },
+       scales: {
         x: {
           type: 'time',
           time: { unit: 'second', displayFormats: { second: 'mm:ss' } },
@@ -215,33 +323,67 @@ function initCharts() {
           grid: { color: 'rgba(255,255,255,0.1)' },
           ticks: { color: '#e0e0e0' }
         }
-      },
-      plugins: {
-        legend: { labels: { color: '#e0e0e0' } }
-      }
-    }
-  });
+       },
+        plugins: {
+          legend: { labels: { color: '#e0e0e0' } },
+          tooltip: {
+           callbacks: {
+             label: function(context) {
+               const value = context.parsed.y;
+               const warning = value < 6 ? ' (WARNING: Insufficient sleep!)' : '';
+               return `Sleep: ${value.toFixed(1)}h${warning}`;
+             }
+           },
+           backgroundColor: function(context) {
+             const value = context.tooltip.dataPoints[0].parsed.y;
+             return value < 6 ? 'rgba(255, 59, 48, 0.9)' : 'rgba(171, 71, 188, 0.9)';
+           },
+           titleColor: '#ffffff',
+           bodyColor: '#ffffff',
+           borderColor: function(context) {
+             const value = context.tooltip.dataPoints[0].parsed.y;
+             return value < 6 ? 'rgba(255, 59, 48, 1)' : 'rgba(171, 71, 188, 1)';
+           },
+           borderWidth: 1
+         }
+       }
+     }
+   });
 
-  const ctxWellness = document.getElementById('wellness-chart').getContext('2d');
+   const ctxWellness = document.getElementById('wellness-chart').getContext('2d');
   charts.wellness = new Chart(ctxWellness, {
     type: 'radar',
     data: { labels: ['Stress', 'Mood', 'Energy'], datasets: [{ label: 'Wellness', data: [], backgroundColor: 'rgba(255, 99, 132, 0.2)', borderColor: '#ff6384' }] },
-    options: {
-      responsive: true,
-      animation: { duration: 0 },
-      scales: {
+     options: {
+       responsive: true,
+       animation: { duration: 0 },
+       scales: {
         r: {
           grid: { color: 'rgba(255,255,255,0.1)' },
           ticks: { color: '#e0e0e0' },
           pointLabels: { color: '#e0e0e0' }
         }
-      },
-      plugins: {
-        legend: { labels: { color: '#e0e0e0' } }
-      }
-    }
-  });
-}
+       },
+        plugins: {
+          legend: { labels: { color: '#e0e0e0' } },
+          tooltip: {
+           callbacks: {
+             label: function(context) {
+               const label = context.label || '';
+               const value = context.parsed.r;
+               return `${label}: ${value.toFixed(1)}`;
+             }
+           },
+           backgroundColor: 'rgba(255, 99, 132, 0.9)',
+           titleColor: '#ffffff',
+           bodyColor: '#ffffff',
+           borderColor: 'rgba(255, 99, 132, 1)',
+           borderWidth: 1
+         }
+       }
+     }
+   });
+ }
 
 // Update data with sine waves for smooth variation
 function updateData() {
@@ -332,29 +474,148 @@ function checkAlerts() {
     user.alerts.forEach(alert => alerts.push(`${user.name}: ${alert}`));
   });
 
-  document.getElementById('alert-list').innerHTML = alerts.map(a => `<div class="alert">${a}</div>`).join('');
+  document.getElementById('alert-list').innerHTML = alerts.map(a => `<div class="alert">${a}<button class="acknowledge-btn" data-alert="${a}">Acknowledge</button></div>`).join('');
+}
+
+// Get prevention tips based on alerts
+function getPreventionTips(alerts) {
+  const tips = {
+    'Hydration reminder': 'Drink water regularly throughout the day to stay hydrated.',
+    'Sleep cycle alert': 'Maintain a consistent sleep schedule and aim for 7-8 hours of sleep.',
+    'Mental wellness check': 'Practice mindfulness, meditation, or engage in relaxing activities.',
+    'Exercise reminder': 'Incorporate daily physical activity like walking or stretching.'
+  };
+  return alerts.map(alert => `<li>${tips[alert] || 'Follow general health guidelines.'}</li>`).join('');
 }
 
 // Display users
 function displayUsers() {
-  const userList = users.map(user => `
+  const userList = users.map(user => {
+    const preventionTips = getPreventionTips(user.alerts);
+    return `
     <div class="user">
       <h4>${user.name}</h4>
       <p>Role: ${user.role}</p>
       <p>Bio: ${user.bio}</p>
-      <button onclick="editUser(${user.id})">Edit Alerts</button>
+      ${preventionTips ? `<div class="prevention-section"><h5>Alert Prevention Tips</h5><ul>${preventionTips}</ul></div>` : ''}
+       <button onclick="openProfileModal(${user.id})">View Profile</button>
     </div>
-  `).join('');
+  `}).join('');
   document.getElementById('users').innerHTML = userList;
 }
 
-// Edit user alerts
-function editUser(id) {
+// Open profile modal
+function openProfileModal(id) {
   const user = users.find(u => u.id === id);
   if (user) {
+    // Populate modal with user data
+    document.getElementById('modal-name').textContent = user.name;
+    document.getElementById('modal-role').textContent = user.role;
+    document.getElementById('modal-bio').textContent = user.bio;
+    document.getElementById('modal-oxygen').textContent = document.getElementById('oxygen-val').textContent;
+    document.getElementById('modal-temp').textContent = document.getElementById('temp-val').textContent;
+    document.getElementById('modal-sleep').textContent = document.getElementById('sleep-val').textContent;
+    document.getElementById('modal-wellness').textContent = document.getElementById('wellness-val').textContent;
+    document.getElementById('modal-notes').value = user.personalNotes || '';
+
+    // Populate alerts
+    const alertsList = user.alerts.map(alert => `<li>${alert}</li>`).join('');
+    document.getElementById('modal-alerts').innerHTML = alertsList || '<li>No active alerts</li>';
+
+    // Show modal
+    const modal = document.getElementById('profile-modal');
+    modal.style.display = 'block';
+
+    // Store current user ID for saving
+    modal.dataset.userId = id;
+
+    // Attach event listeners (in case they weren't attached)
+    setupModalEventListeners();
+  }
+}
+
+// Close modal
+function closeProfileModal() {
+  const modal = document.getElementById('profile-modal');
+  modal.style.display = 'none';
+  // Remove keyboard listener when modal closes
+  document.removeEventListener('keydown', handleModalKeydown);
+}
+
+// Setup modal event listeners
+function setupModalEventListeners() {
+  const modal = document.getElementById('profile-modal');
+  const closeBtn = document.getElementById('modal-close');
+  const saveBtn = document.getElementById('modal-save');
+  const addAlertBtn = document.getElementById('add-alert-btn');
+
+  // Remove existing listeners to prevent duplicates
+  if (closeBtn) {
+    closeBtn.removeEventListener('click', closeProfileModal);
+    closeBtn.addEventListener('click', closeProfileModal);
+  }
+  if (saveBtn) {
+    saveBtn.removeEventListener('click', saveProfileChanges);
+    saveBtn.addEventListener('click', saveProfileChanges);
+  }
+  if (addAlertBtn) {
+    addAlertBtn.removeEventListener('click', addAlertToUser);
+    addAlertBtn.addEventListener('click', addAlertToUser);
+  }
+  if (modal) {
+    modal.removeEventListener('click', handleModalClick);
+    modal.addEventListener('click', handleModalClick);
+
+    // Add keyboard support
+    document.removeEventListener('keydown', handleModalKeydown);
+    document.addEventListener('keydown', handleModalKeydown);
+  }
+}
+
+// Handle modal click (outside to close)
+function handleModalClick(e) {
+  const modal = document.getElementById('profile-modal');
+  if (e.target === modal) {
+    closeProfileModal();
+  }
+}
+
+// Handle keyboard events for modal
+function handleModalKeydown(e) {
+  const modal = document.getElementById('profile-modal');
+  if (modal.style.display === 'block' && e.key === 'Escape') {
+    closeProfileModal();
+  }
+}
+
+// Save profile changes
+function saveProfileChanges() {
+  const modal = document.getElementById('profile-modal');
+  const userId = parseInt(modal.dataset.userId);
+  const user = users.find(u => u.id === userId);
+
+  if (user) {
+    // Save personal notes
+    user.personalNotes = document.getElementById('modal-notes').value;
+    closeProfileModal();
+    displayUsers(); // Refresh the display
+  }
+}
+
+// Add alert to user
+function addAlertToUser() {
+  const modal = document.getElementById('profile-modal');
+  const userId = parseInt(modal.dataset.userId);
+  const user = users.find(u => u.id === userId);
+
+  if (user) {
     const newAlert = prompt('Add alert:', '');
-    if (newAlert) user.alerts.push(newAlert);
-    displayUsers();
+    if (newAlert) {
+      user.alerts.push(newAlert);
+      // Update modal alerts display
+      const alertsList = user.alerts.map(alert => `<li>${alert}</li>`).join('');
+      document.getElementById('modal-alerts').innerHTML = alertsList;
+    }
   }
 }
 
@@ -550,6 +811,30 @@ document.addEventListener('DOMContentLoaded', () => {
   const output = document.getElementById('terminal-output');
   output.innerHTML = '<div>Martian Habitat Control System v1.0</div><div>Type "help" for commands. Login required for most operations.</div>';
 
+  // Alert acknowledge event delegation
+  document.getElementById('alert-list').addEventListener('click', function(e) {
+    if (e.target.classList.contains('acknowledge-btn')) {
+      const alertText = e.target.getAttribute('data-alert');
+      const alertDiv = e.target.parentElement;
+      const time = new Date().toLocaleString();
+
+      // Add fade animation
+      alertDiv.classList.add('acknowledged');
+
+      // Log to history
+      alertHistory.push(`Alert acknowledged at ${time}: ${alertText}`);
+      document.getElementById('alert-history-list').innerHTML = alertHistory.map(h => `<div>${h}</div>`).join('');
+
+      // Show history if hidden
+      document.getElementById('alert-history').style.display = 'block';
+
+      // Remove alert after animation
+      setTimeout(() => {
+        alertDiv.remove();
+      }, 1000);
+    }
+  });
+
   // Tab functionality
   const tabButtons = document.querySelectorAll('.tab-button');
   const tabContents = document.querySelectorAll('.tab-content');
@@ -679,4 +964,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sentMessages.clear();
     }
   });
+
+  // Setup modal event listeners
+  setupModalEventListeners();
 });
