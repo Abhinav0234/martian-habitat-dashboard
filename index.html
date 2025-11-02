@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Martian Habitat Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?CACHEBUSTER">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <header class="header">
+            <h1>Martian Habitat Dashboard</h1>
+            <nav>
+                <ul>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#alerts">Alerts</a></li>
+                <li><a href="#user-profiles">Users</a></li>
+                <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+        </header>
+        <aside class="sidebar">
+            <h3>Current Values</h3>
+             <div id="current-values">
+                 <p>Oxygen: <span id="oxygen-val">20.5%</span></p>
+                 <p>Interior Temp: <span id="temp-val">22°C</span></p>
+                 <p>Food Inventory: <span id="food-val">85%</span></p>
+                 <p>Power Usage: <span id="power-val">60%</span></p>
+                 <p>Sleep Cycles: <span id="sleep-val">7.5h</span></p>
+                 <p>Wellness: <span id="wellness-val">Good</span></p>
+             </div>
+        </aside>
+        <main class="main-content">
+            <section id="alerts" class="alerts-section">
+                <h2>Active Alerts</h2>
+                <div id="alert-list"></div>
+            </section>
+             <section id="life-support" class="dashboard-section">
+                 <h2>Life Support Systems</h2>
+                 <div class="widgets">
+                     <div class="widget">
+                         <h3>Oxygen Levels</h3>
+                         <canvas id="oxygen-chart" width="400" height="200"></canvas>
+                     </div>
+                     <div class="widget">
+                         <h3>Interior Temperature</h3>
+                         <canvas id="interior-temp-chart" width="400" height="200"></canvas>
+                     </div>
+                     <div class="widget">
+                         <h3>Exterior Temperature</h3>
+                         <canvas id="exterior-temp-chart" width="400" height="200"></canvas>
+                     </div>
+                 </div>
+             </section>
+            <section id="resources" class="dashboard-section">
+                <h2>Resource Management</h2>
+                <div class="widgets">
+                    <div class="widget">
+                        <h3>Food Inventory</h3>
+                        <canvas id="food-chart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="widget">
+                        <h3>Power Usage</h3>
+                        <canvas id="power-chart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </section>
+            <section id="crew-health" class="dashboard-section">
+                <h2>Crew Health & Wellness</h2>
+                <div class="widgets">
+                    <div class="widget">
+                        <h3>Sleep Cycles</h3>
+                        <canvas id="sleep-chart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="widget">
+                        <h3>Mental Wellness</h3>
+                        <canvas id="wellness-chart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </section>
+            <section id="user-profiles" class="dashboard-section">
+                <h2>Crew Profiles</h2>
+                <div id="users"></div>
+            </section>
+            <section id="terminal" class="dashboard-section">
+                <h2>Life Craft Terminal</h2>
+                <div class="terminal-tabs">
+                    <button class="tab-button active" data-tab="commands">Commands</button>
+                    <button class="tab-button" data-tab="documentation">Documentation</button>
+                    <button class="tab-button" data-tab="uplink">Uplink</button>
+                </div>
+                <div class="tab-content active" id="commands-tab">
+                    <div id="terminal-output"></div>
+                    <div class="terminal-input-container">
+                        <input type="text" id="terminal-input" placeholder="Enter command..." />
+                        <button id="terminal-submit">Execute</button>
+                    </div>
+                </div>
+                <div class="tab-content" id="documentation-tab">
+                    <div id="documentation-content">
+                        <h3>Martian Habitat Control System Documentation</h3>
+                        <p><strong>System Overview:</strong> Centralized dashboard for managing life-support systems in Martian/Lunar habitats.</p>
+                        <p><strong>Key Features:</strong></p>
+                        <ul>
+                            <li>Real-time monitoring of oxygen, temperature, food, power, sleep, wellness</li>
+                            <li>Dynamic alerts system for anomalies</li>
+                            <li>User authentication with privilege levels</li>
+                            <li>Terminal commands for system control</li>
+                        </ul>
+                        <p><strong>Privileges:</strong></p>
+                        <ul>
+                            <li><strong>Read:</strong> Basic metrics access</li>
+                            <li><strong>Write:</strong> Modify oxygen/temperature (Engineer+)</li>
+                            <li><strong>Admin:</strong> Override, eject (Commander)</li>
+                            <li><strong>Research:</strong> Advanced analytics</li>
+                            <li><strong>Medical:</strong> Health-related commands</li>
+                            <li><strong>Navigation:</strong> Pilot controls</li>
+                        </ul>
+                        <p><strong>Emergency Protocols:</strong></p>
+                        <ul>
+                            <li>Use 'override' for manual control</li>
+                            <li>'eject confirm' initiates evacuation</li>
+                            <li>Monitor alerts continuously</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-content" id="uplink-tab">
+                    <div class="mode-switch">
+                        <label>
+                            <input type="radio" name="comm-mode" value="craft" checked> Craft
+                        </label>
+                        <label>
+                            <input type="radio" name="comm-mode" value="base"> Base
+                        </label>
+                    </div>
+                    <button id="clearChatButton">Clear Chat</button>
+                    <div id="uplink-chat-output">
+                        <div class="chat-messages"></div>
+                        <hr class="chat-separator">
+                        <div class="chat-input-container">
+                            <span id="chat-prompt">&gt;</span>
+                            <input type="text" id="uplink-chat-input" placeholder="Type a message..." />
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js?CACHEBUSTER"></script>
+</body>
+</html>

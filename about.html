@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Martian Habitat Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .about-page .dashboard {
+            grid-template-columns: 1fr;
+        }
+        .about-page .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .about-section {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        .about-section h2 {
+            color: #00d4ff;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+        }
+        .choice-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #00d4ff;
+        }
+        .choice-card h3 {
+            color: #4ecdc4;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .tech-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .tech-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tech-item strong {
+            color: #00d4ff;
+        }
+    </style>
+</head>
+<body class="about-page">
+    <div class="dashboard">
+        <header class="header">
+            <h1>Martian Habitat Dashboard - About</h1>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="#aesthetics">Aesthetics</a></li>
+                    <li><a href="#implementation">Implementation</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main class="main-content">
+            <section id="aesthetics" class="about-section">
+                <h2>Aesthetic Choices and Reasoning</h2>
+                <div class="choice-card">
+                    <h3>Dark Theme for Power Saving</h3>
+                    <p>The dashboard uses a pure black background (#000000) to minimize power consumption on OLED or E-INK panels, ideal for space habitats with limited energy. Subtle gradients and low-opacity overlays ensure readability without bright pixels.</p>
+                </div>
+                <div class="choice-card">
+                    <h3>Atkinson Hyperlegible Font</h3>
+                    <p>Chosen for exceptional readability, especially for astronauts with degraded vision or visors. Designed for accessibility, it ensures clarity in low-light space environments. Its unique letterforms reduce confusion, conveying a reliable, futuristic aesthetic for Martian habitats.</p>
+                </div>
+                <div class="choice-card">
+                    <h3>Color Palette</h3>
+                    <p>Blues (#00d4ff) for headers, evoking icy Mars. Reds (#ff6b6b) for alerts, signaling danger. Greens (#4ecdc4) for positives. Desaturated for eye strain reduction and power efficiency.</p>
+                </div>
+                <div class="choice-card">
+                    <h3>Glass Morphism Effects</h3>
+                    <p>Backdrop blur and transparencies create depth, mimicking sci-fi interfaces. Lightweight for space hardware, adding visual interest without heavy graphics. This design easily adapts to HUDs (Heads-Up Displays), allowing astronauts to overlay the dashboard on visors or AR glasses for on-the-go monitoring without obstructing their view of the environment.</p>
+                </div>
+                <div class="choice-card">
+                    <h3>Animations and Transitions</h3>
+                    <p>Subtle hovers and alert pulses enhance UX. CSS-based for efficiency, avoiding JS overhead in resource-constrained environments.</p>
+                </div>
+                <div class="choice-card">
+                    <h3>Layout</h3>
+                    <p>Grid-based responsive design for tablets to monitors. Sidebar for metrics, main for details, ensuring usability in habitat control rooms.</p>
+                </div>
+            </section>
+            <section id="implementation" class="about-section">
+                <h2>Implementation Context</h2>
+                <p>This dashboard is the CS track submission for the Divergent Teams DC Hackathon, simulating life-support management in Martian/Lunar habitats for 4-6 users.</p>
+                <h3>Technologies Used</h3>
+                <div class="tech-list">
+                    <div class="tech-item"><strong>HTML:</strong> Semantic structure for accessibility.</div>
+                    <div class="tech-item"><strong>CSS:</strong> Inter font, dark theme, responsive design.</div>
+                    <div class="tech-item"><strong>JavaScript:</strong> Data simulation, Chart.js, 5-second updates.</div>
+                    <div class="tech-item"><strong>Chart.js:</strong> Interactive sensor data charts.</div>
+                </div>
+                <h3>Data Simulation</h3>
+                <p>Fake data mimics Martian conditions (oxygen 18-22%, temp -50 to 30°C). Threshold-based alerts simulate emergencies.</p>
+                <h3>User Profiles</h3>
+                <p>Custom alerts for crew, enabling personalized monitoring in isolation.</p>
+                <h3>Future Enhancements</h3>
+                <p>NASA API integration, WebSockets for real-time data, VR/AR for immersive control. Focuses on human-centered design for space colonization.</p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
