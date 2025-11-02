@@ -109,6 +109,14 @@ body::before {
     color: #4ecdc4;
 }
 
+#current-values span.good {
+    color: #4ecdc4; /* green */
+}
+
+#current-values span.bad {
+    color: #ff6b6b; /* red */
+}
+
 .main-content {
     padding: 30px;
     overflow-y: auto;

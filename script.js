@@ -419,13 +419,31 @@ function updateData() {
   if (data.exteriorTemp.length > 100) data.exteriorTemp.shift();
   if (data.sleep.length > 100) data.sleep.shift();
 
-  // Update current values
-  document.getElementById('oxygen-val').textContent = oxygen.toFixed(1) + '%';
-  document.getElementById('temp-val').textContent = interiorTemp.toFixed(1) + '°C';
-  document.getElementById('food-val').textContent = food.toFixed(1) + '%';
-  document.getElementById('power-val').textContent = power.toFixed(1) + '%';
-  document.getElementById('sleep-val').textContent = sleep.toFixed(1) + 'h';
-  document.getElementById('wellness-val').textContent = wellness.reduce((a, b) => a + b) / 3 > 5 ? 'Good' : 'Needs Attention';
+   // Update current values
+   const oxygenEl = document.getElementById('oxygen-val');
+   oxygenEl.textContent = oxygen.toFixed(1) + '%';
+   oxygenEl.className = oxygen >= 19 ? 'good' : 'bad';
+
+   const tempEl = document.getElementById('temp-val');
+   tempEl.textContent = interiorTemp.toFixed(1) + '°C';
+   tempEl.className = (interiorTemp >= 0 && interiorTemp <= 25) ? 'good' : 'bad';
+
+   const foodEl = document.getElementById('food-val');
+   foodEl.textContent = food.toFixed(1) + '%';
+   foodEl.className = food >= 20 ? 'good' : 'bad';
+
+   const powerEl = document.getElementById('power-val');
+   powerEl.textContent = power.toFixed(1) + '%';
+   powerEl.className = power <= 90 ? 'good' : 'bad';
+
+   const sleepEl = document.getElementById('sleep-val');
+   sleepEl.textContent = sleep.toFixed(1) + 'h';
+   sleepEl.className = sleep >= 6 ? 'good' : 'bad';
+
+   const wellnessEl = document.getElementById('wellness-val');
+   const wellnessText = wellness.reduce((a, b) => a + b) / 3 > 5 ? 'Good' : 'Needs Attention';
+   wellnessEl.textContent = wellnessText;
+   wellnessEl.className = wellnessText === 'Good' ? 'good' : 'bad';
 
   // Update charts
   charts.oxygen.data.datasets[0].data = [...data.oxygen];
@@ -666,23 +684,27 @@ const commands = {
   },
   'status': () => checkPermission('read') ? 'System status: All systems nominal. Habitat integrity: 100%. Life support: Active.' : 'Permission denied.',
   'oxygen': () => checkPermission('read') ? 'Oxygen levels: ' + document.getElementById('oxygen-val').textContent + ' (Optimal: 19.5-23.2%)' : 'Permission denied.',
-  'set oxygen': (args) => {
-    if (!checkPermission('write')) return 'Permission denied. Write access required.';
-    if (!args[0]) return 'Usage: set oxygen [value]';
-    const val = parseFloat(args[0]);
-    if (val < 18 || val > 25) return 'Value out of safe range (18-25%).';
-    document.getElementById('oxygen-val').textContent = val.toFixed(1) + '%';
-    return `Oxygen set to ${val.toFixed(1)}%.`;
-  },
+   'set oxygen': (args) => {
+     if (!checkPermission('write')) return 'Permission denied. Write access required.';
+     if (!args[0]) return 'Usage: set oxygen [value]';
+     const val = parseFloat(args[0]);
+     if (val < 18 || val > 25) return 'Value out of safe range (18-25%).';
+     const el = document.getElementById('oxygen-val');
+     el.textContent = val.toFixed(1) + '%';
+     el.className = val >= 19 ? 'good' : 'bad';
+     return `Oxygen set to ${val.toFixed(1)}%.`;
+   },
   'temperature': () => checkPermission('read') ? 'Temperature: ' + document.getElementById('temp-val').textContent + ' (Optimal: -10°C to 25°C)' : 'Permission denied.',
-  'set temperature': (args) => {
-    if (!checkPermission('write')) return 'Permission denied. Write access required.';
-    if (!args[0]) return 'Usage: set temperature [value]';
-    const val = parseFloat(args[0]);
-    if (val < -50 || val > 50) return 'Value out of safe range (-50 to 50°C).';
-    document.getElementById('temp-val').textContent = val.toFixed(1) + '°C';
-    return `Temperature set to ${val.toFixed(1)}°C.`;
-  },
+   'set temperature': (args) => {
+     if (!checkPermission('write')) return 'Permission denied. Write access required.';
+     if (!args[0]) return 'Usage: set temperature [value]';
+     const val = parseFloat(args[0]);
+     if (val < -50 || val > 50) return 'Value out of safe range (-50 to 50°C).';
+     const el = document.getElementById('temp-val');
+     el.textContent = val.toFixed(1) + '°C';
+     el.className = (val >= 0 && val <= 25) ? 'good' : 'bad';
+     return `Temperature set to ${val.toFixed(1)}°C.`;
+   },
   'water_temp': () => checkPermission('read') ? 'Water temperature: 22°C (Optimal: 20-25°C)' : 'Permission denied.',
   'set water_temp': (args) => {
     if (!checkPermission('write')) return 'Permission denied. Write access required.';
